@@ -9,7 +9,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Response;
 
-class Controller extends BaseController
+abstract class Controller extends BaseController
 {
     use AuthorizesRequests;
     use DispatchesJobs;
@@ -47,7 +47,7 @@ class Controller extends BaseController
      * @param mixed $ability
      * @param mixed|array $arguments
      */
-    public function authorizeApi($ability, $arguments = [])
+    public final function authorizeApi(string $ability, array $arguments = []): void
     {
         if (!app(Gate::class)
                 ->forUser(request()->user())

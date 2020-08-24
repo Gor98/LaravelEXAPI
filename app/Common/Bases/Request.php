@@ -11,7 +11,7 @@ abstract class Request extends FormRequest
      *
      * @return bool
      */
-    public function authorize(): bool
+    public final function authorize(): bool
     {
         return true;
     }
@@ -22,7 +22,7 @@ abstract class Request extends FormRequest
      * @param string $prefix
      * @return array
      */
-    public function rules($prefix = ''): array
+    public final function rules(string $prefix = ''): array
     {
         switch ($this->method()) {
             case 'GET':
@@ -33,33 +33,16 @@ abstract class Request extends FormRequest
             case 'PUT':
             case 'PATCH':
                 return self::appendParentToArrayKeys($this->putRules(), $prefix);
+            default: return [];
         }
     }
 
     /**
-     * @param null $keys
+     * @param array $array
+     * @param $prefix
      * @return array
      */
-    public function all($keys = null)
-    {
-        $data = parent::all();
-        foreach ($this->route()->parameters() as $param_key => $param_value) {
-            $data[$param_key] = $param_value;
-        }
-
-        $newData = [];
-
-        foreach ($data as $key => $value) {
-            if (is_int_value($value)) {
-                $value = (int) $value;
-            }
-
-            $newData[$key] = $value;
-        }
-        return $newData;
-    }
-
-    public static function appendPrefixToArrayKeys(array $array, $prefix): array
+    public static function appendPrefixToArrayKeys(array $array, string $prefix): array
     {
         foreach ($array as $key => $value) {
             $array[$prefix . $key] = $value;
@@ -69,7 +52,12 @@ abstract class Request extends FormRequest
         return $array;
     }
 
-    public static function appendParentToArrayKeys(array $array, $parent): array
+    /**
+     * @param array $array
+     * @param string $parent
+     * @return array
+     */
+    public static function appendParentToArrayKeys(array $array, string $parent): array
     {
         if ($parent === '') {
             return $array;
@@ -102,17 +90,5 @@ abstract class Request extends FormRequest
     protected function getRules(): array
     {
         return count(request()->all()) ? $this->postRules() : [];
-    }
-
-    /**
-     * @param Request $requestModel
-     * @param string $title
-     * @param array $rules
-     * @return array
-     */
-    public function attachRules(Request $requestModel, string $title, array $rules)
-    {
-        $requestModel->setMethod($this->method());
-        return array_merge($rules, $requestModel->rules($title));
     }
 }
