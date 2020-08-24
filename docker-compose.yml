@@ -1,0 +1,60 @@
+version: '3.7'
+
+services:
+  laravel-api-core:
+    container_name: laravel-api
+    build:
+      context: .
+      dockerfile: docker/core/Dockerfile
+    depends_on:
+      - laravel-api-db
+    env_file:
+      - ./.env
+    expose:
+      - "${PHP_PORT}"
+    volumes:
+      - ./:/var/www
+      - ./docker/core/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - laravel-api
+
+  laravel-api-db:
+    image: postgres:12
+    container_name: laravel-api-db
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DATABASE}
+    ports:
+      - "${DB_PORT}:${DB_CONTAINER_PORT}"
+    restart: always
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - laravel-api
+
+  laravel-api-webserver:
+    image: nginx:1.17
+    container_name: laravel-api-nginx
+    restart: unless-stopped
+    ports:
+      - "${CORE_NGINX_PORT}:${CONTAINER_NGINX_PORT}"
+    volumes:
+      - ./:/var/www
+      - ./docker/core/conf.d:/etc/nginx/conf.d
+    links:
+      - laravel-api-core
+
+    depends_on:
+      - laravel-api-core
+    networks:
+      laravel-api:
+        aliases:
+          - laravel-api.loc
+
+networks:
+  laravel-api:
+    driver: bridge
+
+volumes:
+  postgres-data:
