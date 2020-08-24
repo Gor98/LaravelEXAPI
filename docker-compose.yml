@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   laravel-api-core:
-    container_name: laravel-api
+    container_name: laravel-api-core
     build:
       context: .
       dockerfile: docker/core/Dockerfile
@@ -44,7 +44,6 @@ services:
       - ./docker/core/conf.d:/etc/nginx/conf.d
     links:
       - laravel-api-core
-
     depends_on:
       - laravel-api-core
     networks:
