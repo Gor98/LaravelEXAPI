@@ -1,8 +1,12 @@
 <?php
 
+use Illuminate\Auth\AuthenticationException;
+
 return [
-    'ValidationException' => '&laquo; Previous',
-    'MethodNotAllowedHttpException' => 'Next &raquo;',
-    'NotFoundHttpException' => 'Next &raquo;',
-    'UnauthorizedHttpException' => 'Next &raquo;',
+    'ValidationException' => 'Invalid data provided.',
+    'MethodNotAllowedHttpException' => 'Wrong method to request.',
+    'NotFoundHttpException' => 'Not found',
+    'UnauthorizedHttpException' => 'Forbidden.',
+    'AuthenticationException' => 'Unauthorized.',
+    'default' => 'Something went wrong.',
 ];

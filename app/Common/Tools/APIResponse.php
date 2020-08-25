@@ -39,4 +39,16 @@ class APIResponse
     ): JsonResponse {
         return response()->json(['error' => $responseObject], $responseCode, $headers);
     }
+
+    /**
+     * @param int $responseCode
+     * @param array $headers
+     * @return JsonResponse
+     */
+    public static function noContentResponse(
+        int $responseCode = Response::HTTP_NO_CONTENT,
+        $headers = []
+    ): JsonResponse {
+        return response()->json([], $responseCode, $headers);
+    }
 }

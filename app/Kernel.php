@@ -15,6 +15,7 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         // \App\Middleware\TrustHosts::class,
+        \App\Middleware\AcceptJson::class,
         \App\Middleware\TrustProxies::class,
         \Fruitcake\Cors\HandleCors::class,
         \App\Middleware\CheckForMaintenanceMode::class,
@@ -40,8 +41,6 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:60,1',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Middleware\Cors::class,
-            \App\Middleware\AcceptJson::class,
         ],
     ];
 
@@ -53,6 +52,8 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+        'acceptJson' => \App\Middleware\AcceptJson::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,

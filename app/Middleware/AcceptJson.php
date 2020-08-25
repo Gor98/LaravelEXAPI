@@ -15,7 +15,7 @@ class AcceptJson
      * @param Closure $next
      * @return mixed
      */
-    public final function handle(Request $request, Closure $next): Mixed_
+    final public function handle(Request $request, Closure $next)
     {
         $request->headers->set('Accept', 'application/json');
 

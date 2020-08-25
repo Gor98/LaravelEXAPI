@@ -23,7 +23,6 @@ interface RepositoryContract
     public function fetch($object): Model;
     public function find(int $id, array $columns, array $relations, bool$throwException): Mixed_;
     public function findBy(array $credentials, array $columns, array $relations, bool $throwException): Mixed_;
-    public function exists(array $credentials): bool;
     public function makeQuery(): Builder;
     public function makeModel(): Model;
     public function sortPaginate(array $filters, array $meta): LengthAwarePaginator;
