@@ -7,7 +7,11 @@ use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -37,7 +41,7 @@ class Handler extends ExceptionHandler
      * @param  Throwable $exception
      * @throws Exception
      */
-    public final function report(Throwable $exception): void
+    final public function report(Throwable $exception): void
     {
         parent::report($exception);
     }
@@ -45,13 +49,13 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  Request   $request
-     * @param  Throwable $exception
-     * @return Response
+     * @param Request $request
+     * @param Throwable $exception
+     * @return JsonResponse
      *
      * @throws Throwable
      */
-    public final function render($request, Throwable $exception)
+    final public function render($request, Throwable $exception): JsonResponse
     {
         if ($request->wantsJson()) {
             return $this->handleApiException($request, $exception);
@@ -69,61 +73,56 @@ class Handler extends ExceptionHandler
     {
         $exception = $this->prepareException($exception);
 
-        if ($exception instanceof \Illuminate\Http\Exceptions\HttpResponseException) {
-            $exception = $exception->getResponse();
-        } else if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
-            $exception = $this->unauthenticated($request, $exception);
-        } else if ($exception instanceof \Illuminate\Validation\ValidationException) {
-            $exception = $this->convertValidationExceptionToResponse($exception, $request);
-        }
-
         return $this->customApiResponse($exception);
     }
 
     /**
      * @param Throwable $exception
-     * @return JsonResponse
+     * @return void
      */
     private function customApiResponse(Throwable $exception): JsonResponse
     {
-        if (method_exists($exception, 'getStatusCode')) {
-            $statusCode = $exception->getStatusCode();
-        } else {
-            $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-        }
+        $exceptionName = get_class($exception);
 
-        $response = [];
-
-        switch ($statusCode) {
-            case Response::HTTP_UNAUTHORIZED:
-                $response['message'] = 'Unauthorized';
+        switch ($exceptionName) {
+            case ValidationException::class:
+                $response['message'] = trans("errors.".getClassName($exception));
+                $response['errors'] = $exception->errors();
+                $response['status'] = Response::HTTP_UNPROCESSABLE_ENTITY;
                 break;
-            case Response::HTTP_FORBIDDEN:
-                $response['message'] = 'Forbidden';
+            case UnauthorizedHttpException::class:
+                $response['message'] = trans("errors.".getClassName($exception));
+                $response['status'] = Response::HTTP_UNAUTHORIZED;
                 break;
-            case Response::HTTP_NOT_FOUND:
-                $response['message'] = 'Not Found';
+            case NotFoundHttpException::class:
+                $response['message'] = trans("errors.".getClassName($exception));
+                $response['status'] = Response::HTTP_NOT_FOUND;
                 break;
-            case Response::HTTP_METHOD_NOT_ALLOWED:
-                $response['message'] = 'Method Not Allowed';
-                break;
-            case Response::HTTP_UNPROCESSABLE_ENTITY:
-                $response['message'] = $exception->getMessage();
-                $response['errors'] =  $exception->errors();
+            case MethodNotAllowedHttpException::class:
+                $response['message'] = trans("errors.".getClassName($exception));
+                $response['status'] = Response::HTTP_METHOD_NOT_ALLOWED;
                 break;
             default:
-                $response['message'] = ($statusCode == Response::HTTP_INTERNAL_SERVER_ERROR)
-                    ? 'Whoops, looks like something went wrong' : $exception->getMessage();
+                $response['message'] =  $exception->getMessage();
+                $response['status'] =  $exception->getCode();
                 break;
         }
 
         if (config('app.debug')) {
-            $response['trace'] = $exception->getTrace();
             $response['code'] = $exception->getCode();
+            $response['trace'] = $exception->getTrace();
         }
 
-        $response['status'] = $statusCode;
+        return $this->makeResponse($response, $response['status']);
+    }
 
+    /**
+     * @param $response
+     * @param $statusCode
+     * @return JsonResponse
+     */
+    public function makeResponse($response, $statusCode): JsonResponse
+    {
         return APIResponse::errorResponse($response, $statusCode);
     }
 }
