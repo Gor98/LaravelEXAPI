@@ -27,6 +27,20 @@ class APIResponse
     }
 
     /**
+     * @param $responseObject
+     * @param int $responseCode
+     * @param array $headers
+     * @return JsonResponse
+     */
+    public static function collectionResponse(
+        object $responseObject,
+        int $responseCode = Response::HTTP_OK,
+        array $headers = []
+    ): JsonResponse {
+        return response()->json($responseObject, $responseCode, $headers);
+    }
+
+    /**
      * @param object $responseObject
      * @param int $responseCode
      * @param array $headers

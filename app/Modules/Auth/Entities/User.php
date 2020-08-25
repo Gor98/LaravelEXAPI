@@ -64,8 +64,26 @@ class User extends Authenticatable implements JWTSubject
      */
     public function setPasswordAttribute($password)
     {
-        if ( !empty($password) ) {
+        if (!empty($password)) {
             $this->attributes['password'] = bcrypt($password);
         }
+    }
+
+    /**
+     * @param $query
+     * @return mixed
+     */
+    public function scopeIsActive($query)
+    {
+        return $query->whereNotNull('email_verified_at');
+    }
+
+    /**
+     * @param $query
+     * @return mixed
+     */
+    public function scopeIsNotActive($query)
+    {
+        return $query->whereNull('email_verified_at');
     }
 }

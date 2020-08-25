@@ -6,6 +6,7 @@ namespace App\Modules\Auth\Services;
 use App\Common\Bases\Service;
 use App\Common\Exceptions\RepositoryException;
 use App\Modules\Auth\Repositories\UserRepository;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\UnauthorizedException;
 
@@ -62,5 +63,15 @@ class UserService extends Service
     public function logout(): void
     {
         auth()->logout();
+    }
+
+    /**
+     * @param array $filters
+     * @param array $meta
+     * @return LengthAwarePaginator
+     */
+    public function sortPaginate(array $filters, array $meta): LengthAwarePaginator
+    {
+        return $this->userRepository->sortPaginate($filters, $meta);
     }
 }

@@ -16,6 +16,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property string email
  * @property Carbon created_at
  * @property Carbon updated_at
+ * @property Carbon email_verified_at
  */
 class User extends JsonResource
 {
@@ -31,7 +32,7 @@ class User extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'is_active' => $this->verified_at ? true : false,
+            'is_active' => is_null($this->email_verified_at) ? false : true,
             'created_at' => format($this->created_at),
             'updated_at' => format($this->updated_at),
         ];
