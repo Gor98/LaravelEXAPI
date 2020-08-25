@@ -30,5 +30,14 @@ function getClassName(object $object): string
  */
 function toDate($time): string
 {
-    return Carbon::now()->addSeconds($time)->format(Setting::DATE_TIME_FORMAT);
+    return format(Carbon::now()->addSeconds($time));
+}
+
+/**
+ * @param Carbon $date
+ * @return string
+ */
+function format(Carbon $date)
+{
+    return $date->format(Setting::DATE_TIME_FORMAT);
 }

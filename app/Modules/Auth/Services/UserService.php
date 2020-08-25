@@ -41,15 +41,15 @@ class UserService extends Service
 
     /**
      * @param array $data
-     * @return array
+     * @return object
      */
-    public function login(array $data): array
+    public function login(array $data): object
     {
         if (!$token = auth()->attempt($data)) {
             throw new UnauthorizedException();
         }
 
-        return [
+        return (object) [
             'token_type' => 'bearer',
             'access_token' => $token,
             'expires_in' => toDate(auth()->factory()->getTTL()),

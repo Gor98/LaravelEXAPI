@@ -18,8 +18,8 @@ class RegisterRequest extends Request
     protected function postRules(): array
     {
         return [
-            'name' => 'required|email|max:255',
-            'email' => 'required|email|max:255',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email|max:255',
             'password' => 'required|confirmed|string|min:6'
         ];
     }

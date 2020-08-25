@@ -3,7 +3,9 @@
 
 namespace App\Modules\Auth\Actions;
 
+use App\Common\Exceptions\RepositoryException;
 use App\Modules\Auth\Requests\AuthRequest;
+use App\Modules\Auth\Requests\RegisterRequest;
 use App\Modules\Auth\Services\UserService;
 use Illuminate\Database\Eloquent\Model;
 
@@ -29,9 +31,9 @@ class AuthAction
 
     /**
      * @param AuthRequest $request
-     * @return array
+     * @return object
      */
-    public function loginUser(AuthRequest $request): array
+    public function loginUser(AuthRequest $request): object
     {
         return $this->userService->login($request->only(['email', 'password']));
     }
@@ -42,5 +44,15 @@ class AuthAction
     public function logoutUser(): void
     {
         $this->userService->logout();
+    }
+
+    /**
+     * @param RegisterRequest $request
+     * @return Model
+     * @throws RepositoryException
+     */
+    public function makeUser(RegisterRequest $request): Model
+    {
+        return $this->userService->create($request->all());
     }
 }

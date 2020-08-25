@@ -13,13 +13,13 @@ use Symfony\Component\HttpFoundation\Response;
 class APIResponse
 {
     /**
-     * @param array $responseObject
+     * @param object $responseObject
      * @param int $responseCode
      * @param array $headers
      * @return JsonResponse
      */
     public static function successResponse(
-        array $responseObject,
+        object $responseObject,
         int $responseCode = Response::HTTP_OK,
         array $headers = []
     ): JsonResponse {
@@ -27,13 +27,13 @@ class APIResponse
     }
 
     /**
-     * @param array $responseObject
+     * @param object $responseObject
      * @param int $responseCode
      * @param array $headers
      * @return JsonResponse
      */
     public static function errorResponse(
-        array $responseObject,
+        object $responseObject,
         int $responseCode = Response::HTTP_BAD_REQUEST,
         array $headers = []
     ): JsonResponse {

@@ -85,6 +85,7 @@ class Handler extends ExceptionHandler
     private function customApiResponse(Throwable $exception): JsonResponse
     {
         $exceptionName = get_class($exception);
+
         switch ($exceptionName) {
             case ValidationException::class:
                 $response['message'] = trans("errors.".getClassName($exception));
@@ -113,7 +114,6 @@ class Handler extends ExceptionHandler
                 break;
         }
 
-
         if (config('app.debug')) {
             $response['message'] = $exception->getMessage();
             $response['code'] = $exception->getCode();
@@ -130,6 +130,6 @@ class Handler extends ExceptionHandler
      */
     public function makeResponse($response, $statusCode): JsonResponse
     {
-        return APIResponse::errorResponse($response, $statusCode);
+        return APIResponse::errorResponse((object) $response, $statusCode);
     }
 }
