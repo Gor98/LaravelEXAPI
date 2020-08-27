@@ -11,6 +11,8 @@ class Setting
     public const DEFAULT_ORDER = 'created_at';
     public const DATE_TIME_FORMAT = 'Y-m-d H:i:s';
 
+    public const USER_PASS = 'secret';
+
     public const ORDERS = [
         self::DESC,
         self::ASC,

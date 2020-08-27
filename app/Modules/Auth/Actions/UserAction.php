@@ -8,8 +8,10 @@ use App\Modules\Auth\Requests\AuthRequest;
 use App\Modules\Auth\Requests\RegisterRequest;
 use App\Modules\Auth\Requests\UserRequest;
 use App\Modules\Auth\Services\UserService;
+use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
+use phpDocumentor\Reflection\Types\Mixed_;
 
 /**
  * Class AuthAction
@@ -68,5 +70,34 @@ class UserAction
             $request->only(['isActive', 'isNotActive']),
             $request->only(['page', 'perPage', 'orderType', 'orderBy', 'search'])
         );
+    }
+
+    /**
+     * @param UserRequest $request
+     * @param Model|int|array $object
+     * @return Model
+     */
+    public function update(UserRequest $request, $object): Model
+    {
+        return $this->userService->update($request->all(), $object);
+    }
+
+    /**
+     * @param Model|int|array $object
+     * @return Model
+     */
+    public function show($object): Model
+    {
+        return $this->userService->show($object);
+    }
+
+    /**
+     * @param Model|int|array $object
+     * @return bool|null
+     * @throws Exception
+     */
+    public function destroy($object)
+    {
+        return $this->userService->destroy($object);
     }
 }

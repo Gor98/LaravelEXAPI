@@ -166,10 +166,10 @@ abstract class Repository
      * Delete row from table.
      *
      * @param Model|array|int $object
-     * @return mixed
+     * @@return bool|null
      * @throws Exception
      */
-    public function delete($object): Mixed_
+    public function delete($object)
     {
         $object = $this->fetch($object);
 

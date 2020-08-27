@@ -32,8 +32,7 @@ class UserRequest extends Request
         return [
             'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|max:255|unique:users,email'.$this->user->id,
-            'password' => 'sometimes|string|min:6',
-            'password_confirmation' => 'required_if:password|string|min:6'
+            'password' => 'sometimes|confirmed|string|min:6',
         ];
     }
 

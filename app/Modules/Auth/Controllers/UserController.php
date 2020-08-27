@@ -6,8 +6,10 @@ namespace App\Modules\Auth\Controllers;
 use App\Common\Bases\Controller;
 use App\Common\Tools\APIResponse;
 use App\Modules\Auth\Actions\UserAction;
+use App\Modules\Auth\Entities\User;
 use App\Modules\Auth\Requests\UserRequest;
 use App\Modules\Auth\Resource\User\UserCollection;
+use App\Modules\Auth\Resource\User\User as UserResource;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -46,34 +48,41 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @return JsonResponse
      */
-    public function show($id)
+    public function show(User $user)
     {
-        //
+        return APIResponse::successResponse(
+            new UserResource($user),
+            Response::HTTP_OK
+        );
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param UserRequest $request
+     * @param User $user
+     * @return JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, User $user)
     {
-        //
+        return APIResponse::successResponse(
+            new UserResource($this->userAction->update($request, $user)),
+            Response::HTTP_OK
+        );
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        $this->userAction->destroy($user);
+        return APIResponse::noContentResponse();
     }
 }

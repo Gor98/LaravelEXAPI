@@ -6,9 +6,11 @@ namespace App\Modules\Auth\Services;
 use App\Common\Bases\Service;
 use App\Common\Exceptions\RepositoryException;
 use App\Modules\Auth\Repositories\UserRepository;
+use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\UnauthorizedException;
+use phpDocumentor\Reflection\Types\Mixed_;
 
 /**
  * Class UserService
@@ -47,14 +49,11 @@ class UserService extends Service
     public function login(array $data): object
     {
         if (!$token = auth()->attempt($data)) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException(trans('errors.UnauthorizedHttpException'));
         }
+        $this->checkUser();
 
-        return (object) [
-            'token_type' => 'bearer',
-            'access_token' => $token,
-            'expires_in' => toDate(auth()->factory()->getTTL()),
-        ];
+        return $this->authData($token);
     }
 
     /**
@@ -73,5 +72,54 @@ class UserService extends Service
     public function sortPaginate(array $filters, array $meta): LengthAwarePaginator
     {
         return $this->userRepository->sortPaginate($filters, $meta);
+    }
+
+    /**
+     * @param array $data
+     * @param Model|int|array $object
+     * @return Model
+     */
+    public function update(array $data, $object): Model
+    {
+        return $this->userRepository->update($data, $object);
+    }
+
+    /**
+     * @param Model|array|int $object
+     * @return bool|null
+     * @throws Exception
+     */
+    public function destroy($object)
+    {
+        return $this->userRepository->delete($object);
+    }
+
+    /**
+     * @param Model|array|int $object
+     * @return Model
+     */
+    public function show($object): Model
+    {
+        return $this->userRepository->fetch($object);
+    }
+
+    /**
+     * @param string $token
+     * @return object
+     */
+    public function authData(string $token): object
+    {
+        return (object) [
+            'token_type' => 'bearer',
+            'access_token' => $token,
+            'expires_in' => toDate(auth()->factory()->getTTL()),
+        ];
+    }
+
+    public function checkUser()
+    {
+        if (is_null(auth()->user()->email_verified_at)) {
+            throw new UnauthorizedException(trans('errors.UnauthorizedHttpException'));
+        }
     }
 }
