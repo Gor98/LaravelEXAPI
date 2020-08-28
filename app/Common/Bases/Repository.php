@@ -11,13 +11,12 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use phpDocumentor\Reflection\Types\Mixed_;
-use PhpParser\Node\Expr\AssignOp\Mod;
 
 /**
  * Class Repository
  * @package App\Common\Bases
  */
-abstract class Repository
+abstract class Repository implements RepositoryContract
 {
     /**
      * @var array
@@ -178,7 +177,7 @@ abstract class Repository
 
     /**
      * @param Model|array|int $object
-     * @return Model|mixed|Mixed_
+     * @return Model
      */
     public function fetch($object): Model
     {

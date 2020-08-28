@@ -43,7 +43,7 @@ class UserRequest extends Request
     {
         return [
             'perPage' => "sometimes|integer",
-            'search' => "sometimes|integer",
+            'search' => "sometimes|string",
             'page' => "sometimes|integer",
             'orderType' => "sometimes|in:".implode(",", Setting::ORDERS),
             'orderBy' => "sometimes|in:".implode(",", self::ORDERABLE)

@@ -14,14 +14,14 @@ use phpDocumentor\Reflection\Types\Mixed_;
  */
 interface RepositoryContract
 {
-    public function fill(array $data, Model$object, array $fillable = []): Model;
+    public function fill(array $data, Model $object, array $fillable = []): Model;
     public function all(array $columns): Collection;
     public function update(array $data, $object, array $fillable = []): Model;
     public function save(Model $object): Model;
-    public function create(array $data,  $fillable = []): Model;
-    public function delete($object): Mixed_;
+    public function create(array $data, array $fillable = []): Model;
+    public function delete($object);
     public function fetch($object): Model;
-    public function find(int $id, array $columns, array $relations, bool$throwException): Mixed_;
+    public function find(int $id, array $columns, array $relations, bool $throwException): Mixed_;
     public function findBy(array $credentials, array $columns, array $relations, bool $throwException): Mixed_;
     public function makeQuery(): Builder;
     public function makeModel(): Model;

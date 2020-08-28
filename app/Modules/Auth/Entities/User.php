@@ -5,12 +5,14 @@ namespace App\Modules\Auth\Entities;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Scout\Searchable;
+use Nicolaslopezj\Searchable\SearchableTrait;
 use phpDocumentor\Reflection\Types\Mixed_;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable;
+    use Notifiable, SearchableTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -19,6 +21,13 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'name', 'email', 'password',
+    ];
+
+    protected $searchable = [
+        'columns' => [
+            'users.name'  => 10,
+            'users.email'  => 10
+        ]
     ];
 
     /**
