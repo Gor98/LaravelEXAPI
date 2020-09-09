@@ -5,6 +5,10 @@ namespace Tests\Feature\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\BaseTest;
 
+/**
+ * Class DeleteTest
+ * @package Tests\Feature\Auth
+ */
 class DeleteTest extends BaseTest
 {
     /**
@@ -27,6 +31,4 @@ class DeleteTest extends BaseTest
             'error' => ['message', 'status']
         ]);
     }
-
-
 }

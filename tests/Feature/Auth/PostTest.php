@@ -6,6 +6,10 @@ use App\Common\Tools\Setting;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\BaseTest;
 
+/**
+ * Class PostTest
+ * @package Tests\Feature\Auth
+ */
 class PostTest extends BaseTest
 {
     /**
@@ -70,7 +74,7 @@ class PostTest extends BaseTest
      * @param $data
      * @dataProvider badLoginData
      */
-    public function testRegisterFailBadData($data)
+    public function testRegisterFailBadData(array $data)
     {
         $response = $this->postJson(route('register'), $data);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJsonStructure([
