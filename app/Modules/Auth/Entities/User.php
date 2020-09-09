@@ -2,14 +2,15 @@
 
 namespace App\Modules\Auth\Entities;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Scout\Searchable;
 use Nicolaslopezj\Searchable\SearchableTrait;
-use phpDocumentor\Reflection\Types\Mixed_;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+/**
+ * Class User
+ * @package App\Modules\Auth\Entities
+ */
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable, SearchableTrait;

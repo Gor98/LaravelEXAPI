@@ -2,16 +2,22 @@
 
 namespace Tests;
 
+use App\Modules\Auth\Entities\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\TestResponse;
 
-abstract class Test extends TestCase
+/**
+ * Class BaseTest
+ * @package Tests
+ */
+abstract class BaseTest extends TestCase
 {
     use WithFaker, DatabaseTransactions, DatabaseMigrations;
 
     const AUTH_URL = '/api/auth/token';
+    const USERS_URL = '/api/users';
 
 
     protected $headers = [
@@ -22,10 +28,15 @@ abstract class Test extends TestCase
     protected $baseUrl = 'http://localhost';
 
 
-    public final function setUp() :void
+    public function setUp() :void
     {
-        $this->baseUrl = env('APP_URL');
         parent::setUp();
+    }
+
+    public function auth()
+    {
+        $this->user = factory(User::class)->create();
+        $this->headers['Authorization'] = 'Bearer '.auth()->login($this->user);
     }
 
     /**
@@ -33,7 +44,7 @@ abstract class Test extends TestCase
      * @param array $headers
      * @return TestResponse
      */
-    public final function getJson($uri, array $headers = []): TestResponse
+    final public function getJson($uri, array $headers = []): TestResponse
     {
         return parent::getJson($uri, array_merge($this->headers, $headers));
     }
@@ -44,7 +55,7 @@ abstract class Test extends TestCase
      * @param array $headers
      * @return TestResponse
      */
-    public final function postJson($uri, array $data = [], array $headers = []): TestResponse
+    final public function postJson($uri, array $data = [], array $headers = []): TestResponse
     {
         return parent::postJson($uri, $data, array_merge($this->headers, $headers));
     }
@@ -55,7 +66,7 @@ abstract class Test extends TestCase
      * @param array $headers
      * @return TestResponse
      */
-    public final function putJson($uri, array $data = [], array $headers = []): TestResponse
+    final public function putJson($uri, array $data = [], array $headers = []): TestResponse
     {
         return parent::putJson($uri, $data, array_merge($this->headers, $headers));
     }
@@ -66,7 +77,7 @@ abstract class Test extends TestCase
      * @param array $headers
      * @return TestResponse
      */
-    public final function patchJson($uri, array $data = [], array $headers = []): TestResponse
+    final public function patchJson($uri, array $data = [], array $headers = []): TestResponse
     {
         return parent::patchJson($uri, $data, array_merge($this->headers, $headers));
     }
@@ -78,7 +89,7 @@ abstract class Test extends TestCase
      * @param array $headers
      * @return TestResponse
      */
-    public final function deleteJson($uri, array $data = [], array $headers = []): TestResponse
+    final public function deleteJson($uri, array $data = [], array $headers = []): TestResponse
     {
         return parent::deleteJson($uri, $data, array_merge($this->headers, $headers));
     }

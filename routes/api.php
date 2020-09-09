@@ -19,11 +19,11 @@ Route::group(['middleware' => 'api'], function () {
 
     // Auth Routes
     Route::group(['namespace' => 'Auth\Controllers', 'prefix' => 'auth'], function () {
-        Route::post('token', 'AuthController@login');
-        Route::post('register', 'AuthController@register');
+        Route::post('token', 'AuthController@login')->name('login');
+        Route::post('register', 'AuthController@register')->name('register');
     });
     Route::group(['namespace' => 'Auth\Controllers', 'middleware' => 'auth:api', 'prefix' => 'auth'], function () {
-        Route::delete('logout', 'AuthController@logout');
+        Route::delete('logout', 'AuthController@logout')->name('logout');
     });
 
     // User Routes

@@ -7,10 +7,10 @@ use App\Common\Bases\Service;
 use App\Common\Exceptions\RepositoryException;
 use App\Modules\Auth\Repositories\UserRepository;
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\UnauthorizedException;
-use phpDocumentor\Reflection\Types\Mixed_;
 
 /**
  * Class UserService
@@ -49,7 +49,7 @@ class UserService extends Service
     public function login(array $data): object
     {
         if (!$token = auth()->attempt($data)) {
-            throw new UnauthorizedException(trans('errors.UnauthorizedHttpException'));
+            throw new AuthenticationException(trans('errors.UnauthorizedHttpException'));
         }
         $this->checkUser();
 
